@@ -8,6 +8,7 @@ module.exports = {
       colors: {
         grey: {
           DEFAULT: '#171414',
+          light: '#2E2B2B'
         }
       },
       boxShadow: {
@@ -44,5 +45,9 @@ module.exports = {
 
   },
   plugins: [],
-  purge: ['./pages/**/*.{js,ts,jsx,tsx}', './layout/**/*.{js,ts,jsx,tsx}'],
+  purge: [
+    './pages/**/*.{js,ts,jsx,tsx}',
+    './layout/**/*.{js,ts,jsx,tsx}',
+    './components/**/*.{js,ts,jsx,tsx}'
+  ],
 }

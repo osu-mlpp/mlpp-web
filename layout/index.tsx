@@ -36,7 +36,6 @@ export default function DefaultLayout({ children }: ChildrenProps) {
     setUpdatedAt(lastUpdateDate)
   }
 
-
   return (
     <div className="container">
       <header className="py-14">
@@ -53,7 +52,7 @@ export default function DefaultLayout({ children }: ChildrenProps) {
         </p>
       </header>
 
-      <main>
+      <main className="mt-20">
         { children }
       </main>
 

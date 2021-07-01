@@ -22,7 +22,7 @@ a {
 }
 
 .container {
-  @apply flex flex-col h-screen;
+  @apply flex flex-col h-screen px-4;
   min-height: 100vh;
 }
 
@@ -33,7 +33,7 @@ a {
 }
 
 header {
-  @apply flex justify-between items-center;
+  @apply flex justify-between items-center flex-wrap gap-6;
 }
 
 .logo {
@@ -60,7 +60,7 @@ header {
 }
 
 main {
-  @apply flex flex-col py-16 px-8 bg-grey shadow-md rounded-md;
+  @apply flex flex-col py-12 px-8 bg-grey shadow-md rounded-md;
   flex: 1;
 }
 
@@ -71,4 +71,9 @@ footer {
 
 footer a {
   @apply flex flex-col justify-center items-center;
+}
+
+input {
+  @apply text-white bg-grey-light outline-none m-0 bg-none rounded shadow-hover
+    flex-1 p-1 pl-2 w-full;
 }
