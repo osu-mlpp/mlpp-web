@@ -6,7 +6,9 @@ import { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { useEffect } from 'react'
 
-const BEATMAPSET_REGEX = /beatmapsets\/(?<id>.*)#/
+const SCORES_ENDPOINT = '/api/scores'
+const BEATMAPSET_REGEX = /beatmapsets\/(?<beatmapset_id>\d*)#.*\/(?<beatmap_id>\d*)/
+
 const getBeatmapsetCover = (beatmapsetId?: string|undefined) => {
   if (!beatmapsetId) return 'https://osu.ppy.sh/images/headers/profile-covers/c4.jpg'
   return `https://assets.ppy.sh/beatmaps/${beatmapsetId}/covers/cover.jpg`
@@ -21,10 +23,24 @@ export default function Home() {
   useEffect(updateBeatmapData, [beatmapUrl])
 
   function updateBeatmapData() {
-    console.log(beatmapUrl)
     const beatmap = BEATMAPSET_REGEX.exec(beatmapUrl)
-    console.log(beatmap)
-    setBeatmapCover(getBeatmapsetCover(beatmap?.groups?.id))
+    const beatmapset_id = beatmap?.groups?.beatmapset_id
+    const beatmap_id = beatmap?.groups?.beatmap_id
+
+    setBeatmapCover(getBeatmapsetCover(beatmapset_id))
+
+    if (beatmap_id) {
+      getBeatmapScores(beatmap_id)
+    }
+  }
+
+  async function getBeatmapScores(beatmap_id: string) {
+    const querystring = new URLSearchParams({
+      beatmap_id
+    })
+    const response = await fetch(`${SCORES_ENDPOINT}?${querystring}`)
+    const scores = await response.json()
+    console.log(scores)
   }
 
   return (
@@ -52,7 +68,6 @@ export default function Home() {
               <Controller
                 name="beatmapUrl"
                 control={control}
-                defaultValue=""
                 render={
                   ({ field }) => (
                     <TextField {...field}
