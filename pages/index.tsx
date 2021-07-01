@@ -7,7 +7,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { useEffect } from 'react'
 
 const BEATMAPSET_REGEX = /beatmapsets\/(?<id>.*)#/
-const getBeatmapsetCover = (beatmapsetId: string|undefined) => {
+const getBeatmapsetCover = (beatmapsetId?: string|undefined) => {
   if (!beatmapsetId) return 'https://osu.ppy.sh/images/headers/profile-covers/c4.jpg'
   return `https://assets.ppy.sh/beatmaps/${beatmapsetId}/covers/cover.jpg`
 }
