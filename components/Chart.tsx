@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { LineChart, Line, Tooltip, XAxis, YAxis, ResponsiveContainer } from 'recharts'
 import { Score } from ".."
 
@@ -28,11 +28,11 @@ export default function Chart({ data, emptyBtnHandler }: ChartProps) {
     setAllDatakeys(keys)
   }, [data])
 
-  function handleDatakeyChange(event: ChangeEvent) {
+  function handleDatakeyChange(event: React.ChangeEvent<HTMLSelectElement>) {
     setYDatakey(event.target.value)
   }
 
-  function handleXDatakeyChange(event: ChangeEvent) {
+  function handleXDatakeyChange(event: React.ChangeEvent<HTMLSelectElement>) {
     setXDatakey(event.target.value)
   }
 

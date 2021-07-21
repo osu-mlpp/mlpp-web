@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import { FiGithub, FiBook } from 'react-icons/fi'
+import { ChildrenProps } from '..'
 
 const GITHUB_REPO_ENDPOINT = 'https://api.github.com/repos/osu-mlpp/osu-mlpp'
 

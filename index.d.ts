@@ -1,5 +1,9 @@
 import { V1 } from 'osu-api-extended'
 
+export interface ProcessEnv {
+  [key: string]: string | undefined
+}
+
 type ChildrenProps = {
   children?: JSX.Element[]
 }
