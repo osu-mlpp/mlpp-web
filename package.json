@@ -10,12 +10,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "classnames": "^2.3.1",
     "mariadb": "^2.5.4",
     "next": "11.0.1",
+    "osu-api-extended": "^1.0.12",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-hook-form": "^7.9.0",
-    "react-icons": "^4.2.0"
+    "react-icons": "^4.2.0",
+    "recharts": "^2.0.10"
   },
   "devDependencies": {
     "@studiometa/tailwind-config": "^1.0.0-alpha.9",

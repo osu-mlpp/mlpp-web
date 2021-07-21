@@ -17,7 +17,9 @@ a {
   text-decoration: none;
 }
 
-* {
+*,
+*::before,
+*::after {
   @apply box-border;
 }
 
@@ -36,14 +38,18 @@ header {
   @apply flex justify-between items-center flex-wrap gap-6;
 }
 
-.logo {
-  @apply font-sf font-bold text-white transition-shadow ease-out-cubic;
+.btn {
+  @apply font-sf font-bold transition-shadow ease-out-cubic text-white inline-block py-2 px-4 rounded;
   background: radial-gradient( circle 300px at 8% 89.3%,  rgba(20,157,208,1) 0%, rgba(140,63,226,1) 90% );
   background-size: 200% 200%;
   animation: gradient 10s ease infinite;
 }
 
-.logo:hover {
+.btn--large {
+  @apply py-4 px-8;
+}
+
+.btn:hover {
   @apply shadow-hover;
 }
 
@@ -66,14 +72,37 @@ main {
 
 footer {
   @apply flex justify-center items-center gap-6
-    w-full h-auto mt-14 mb-8;
+    w-full h-auto pb-8 mt-14 mb-8;
 }
 
 footer a {
   @apply flex flex-col justify-center items-center;
 }
 
+label {
+  @apply block;
+}
+
 input {
-  @apply text-white bg-grey-light outline-none m-0 bg-none rounded shadow-hover
-    flex-1 p-1 pl-2 w-full;
+  @apply text-white bg-grey-light outline-none m-0 bg-none transition-shadow focus:shadow-hover
+    flex-1 p-2 w-full;
+}
+
+select {
+  @apply bg-grey-light px-4 py-2;
+  @apply appearance-none border-none m-0 w-auto;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: inherit;
+  line-height: inherit;
+}
+
+.select-field {
+  @apply flex items-center relative;
+}
+
+.select-field::after {
+  content: url('/svg/chevron-down.svg');
+  @apply h-6 w-6 absolute;
+  right: 0.3rem;
 }

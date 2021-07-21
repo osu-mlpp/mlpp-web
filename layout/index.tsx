@@ -40,7 +40,7 @@ export default function DefaultLayout({ children }: ChildrenProps) {
     <div className="container">
       <header className="py-14">
         <Link href="/" passHref={true}>
-          <a className="logo bg-white text-black inline-block py-4 px-8 rounded">
+          <a className="btn btn--large">
             <h1>
               MLpp
             </h1>

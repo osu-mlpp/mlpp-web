@@ -1,22 +1,29 @@
+import { useState, useEffect } from 'react'
+import { useForm, Controller } from 'react-hook-form'
 import Head from 'next/head'
-import Image from 'next/image'
 import DefaultLayout from '../layout'
 import TextField from '../components/TextField'
-import { useState } from 'react'
-import { useForm, Controller } from 'react-hook-form'
-import { useEffect } from 'react'
+import Chart from '../components/Chart'
+import BeatmapPreview from '../components/BeatmapPreview'
+import { V1BeatmapObject } from '..'
 
 const SCORES_ENDPOINT = '/api/scores'
 const BEATMAPSET_REGEX = /beatmapsets\/(?<beatmapset_id>\d*)#.*\/(?<beatmap_id>\d*)/
+const BEATMAP_URL_EXAMPLE = 'https://osu.ppy.sh/beatmapsets/842412#osu/1764213'
 
-const getBeatmapsetCover = (beatmapsetId?: string|undefined) => {
-  if (!beatmapsetId) return 'https://osu.ppy.sh/images/headers/profile-covers/c4.jpg'
+const getBeatmapsetCover = (beatmapsetId?: number|string|undefined) => {
+  if (!beatmapsetId) {
+    return `https://osu.ppy.sh/images/headers/profile-covers/c${randomNumber(1, 8)}.jpg`
+  }
+
   return `https://assets.ppy.sh/beatmaps/${beatmapsetId}/covers/cover.jpg`
 }
 
 export default function Home() {
-  const { control, watch } = useForm({ mode: 'onBlur' })
+  const { control, watch, setValue } = useForm({ mode: 'onBlur' })
   const [beatmapCover, setBeatmapCover] = useState(getBeatmapsetCover())
+  const [beatmap, setBeatmap] = useState<V1BeatmapObject|null>(null)
+  const [scores, setScores] = useState([])
 
   const beatmapUrl: string = watch('beatmapUrl', getBeatmapsetCover())
 
@@ -27,71 +34,78 @@ export default function Home() {
     const beatmapset_id = beatmap?.groups?.beatmapset_id
     const beatmap_id = beatmap?.groups?.beatmap_id
 
+    // Update the image cover
     setBeatmapCover(getBeatmapsetCover(beatmapset_id))
 
+    // If the beatmap URL is a valid beatmap URL, we can fetch the data
     if (beatmap_id) {
-      getBeatmapScores(beatmap_id)
+      getData(beatmap_id)
+      return
     }
+
+    // If the beatmap URL is invalid clear state
+    setBeatmap(null)
+    setScores([])
   }
 
-  async function getBeatmapScores(beatmap_id: string) {
+  async function getData(beatmap_id: string) {
     const querystring = new URLSearchParams({
       beatmap_id
     })
     const response = await fetch(`${SCORES_ENDPOINT}?${querystring}`)
-    const scores = await response.json()
-    console.log(scores)
+    const data = await response.json()
+
+    setScores(data.scores)
+    setBeatmap(data.beatmap)
+  }
+
+  function getExampleMap() {
+    setValue('beatmapUrl', BEATMAP_URL_EXAMPLE)
   }
 
   return (
     <DefaultLayout>
       <Head>
-        <title>MLpp - Difficulty estimations of scores on osu! beatmaps using statistics and maching learning</title>
+        <title>MLpp - Charts</title>
         <meta name="description" content="Difficulty estimations of scores on osu! beatmaps using statistics and maching learning" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <section className="relative">
-        <div className="flex justify-center -mt-24 mb-6">
-          <Image
-            className="rounded shadow "
-            src={beatmapCover}
-            alt="Beatmap Cover"
-            height={250}
-            width={900}
-          />
+      <section className="grid relative">
+        {/* Display the beatmap info if any */}
+        <BeatmapPreview
+          beatmap={beatmap}
+          beatmapCover={beatmapCover}
+        />
+
+        {/* Enter the beatmap URL form */}
+        <div className="grid-row flex justify-center">
+          <div className="grid-col-12">
+            <Controller
+              name="beatmapUrl"
+              control={control}
+              render={
+                ({ field }) => (
+                  <TextField {...field}
+                    name="beatmapUrl"
+                    label="Beatmap URL"
+                    placeholder={BEATMAP_URL_EXAMPLE} />
+                )
+              }
+            />
+          </div>
         </div>
 
-        <form className="grid">
-          <div className="grid-row flex justify-center">
-            <div className="grid-col-12 m:grid-col-8">
-              <Controller
-                name="beatmapUrl"
-                control={control}
-                render={
-                  ({ field }) => (
-                    <TextField {...field}
-                      name="beatmapUrl"
-                      label="Beatmap URL"
-                      placeholder="https://osu.ppy.sh/beatmapsets/842412#osu/1764213" />
-                  )
-                }
-              />
-              <div className="grid-row mt-4">
-                <div className="grid-col-12 m:grid-col-4">
-                  <TextField name="min-accuracy" label="Min Accuracy" placeholder="98" />
-                </div>
-                <div className="grid-col-12 m:grid-col-4">
-                  <TextField name="min-combo" label="Min Combo" placeholder="425" />
-                </div>
-                <div className="grid-col-12 m:grid-col-4">
-                  <TextField name="max-miss" label="Max Miss" placeholder="3" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </form>
+        {/* Display the chart */}
+        <Chart
+          data={scores}
+          emptyBtnHandler={getExampleMap}
+        />
       </section>
     </DefaultLayout>
   )
+}
+
+function randomNumber(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1)) + min
 }

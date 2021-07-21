@@ -1,3 +1,5 @@
+const colors = require('tailwindcss/colors')
+
 module.exports = {
   presets: [
     require('@studiometa/tailwind-config')
@@ -13,6 +15,9 @@ module.exports = {
       },
       boxShadow: {
         hover: '0 0 0 .1rem #FFFFFF'
+      },
+      brightness: {
+        30: '.30'
       }
     },
     fontFace: {
@@ -42,7 +47,17 @@ module.exports = {
     fontFamily: {
       sf: ['SF', 'system-ui', '-apple-system', 'Arial', 'sans-serif'],
     },
-
+    colors: {
+      transparent: 'transparent',
+      current: 'currentColor',
+      black: colors.black,
+      white: colors.white,
+      gray: colors.trueGray,
+      indigo: colors.indigo,
+      red: colors.rose,
+      yellow: colors.amber,
+      blue: colors.blue
+    }
   },
   plugins: [],
   purge: [
