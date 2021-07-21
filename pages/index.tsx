@@ -73,13 +73,17 @@ export default function Home() {
 
       <section className="grid relative">
         {/* Display the beatmap info if any */}
-        <BeatmapPreview
-          beatmap={beatmap}
-          beatmapCover={beatmapCover}
-        />
+        <div className="grid-row">
+          <div className="grid-col-12">
+            <BeatmapPreview
+              beatmap={beatmap}
+              beatmapCover={beatmapCover}
+            />
+          </div>
+        </div>
 
         {/* Enter the beatmap URL form */}
-        <div className="grid-row flex justify-center">
+        <div className="grid-row">
           <div className="grid-col-12">
             <Controller
               name="beatmapUrl"
@@ -96,11 +100,16 @@ export default function Home() {
           </div>
         </div>
 
+
         {/* Display the chart */}
-        <Chart
-          data={scores}
-          emptyBtnHandler={getExampleMap}
-        />
+        <div className="grid-row">
+          <div className="grid-col-12">
+            <Chart
+              data={scores}
+              emptyBtnHandler={getExampleMap}
+            />
+          </div>
+        </div>
       </section>
     </DefaultLayout>
   )
