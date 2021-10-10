@@ -1,6 +1,19 @@
 import dotenv from 'dotenv'
 import mariadb from 'mariadb'
 
+if(process.argv.length != 4) {
+    console.error("This script takes two arguments, the limit and offset.")
+    process.exit(1)
+}
+
+const limit: number = Number(process.argv[2]);
+const offset: number = Number(process.argv[3]);
+
+if(!(0 <= limit && 0 <= offset)) {
+    console.error(`Limit and offset should be natural numbers, but we have ${limit} and ${offset}`)
+    process.exit(1)
+}
+
 dotenv.config()
 
 const pool = mariadb.createPool({
@@ -33,7 +46,9 @@ async function getPlayers(): Promise<number[]> {
     let resp: Player[]
     try {
         db = await pool.getConnection()
-        resp = await db.query(`SELECT U.user_id from osu_user_stats as U ORDER BY U.user_id LIMIT 1000 OFFSET 0`)
+        resp = await db.query(`SELECT U.user_id from osu_user_stats as U ORDER BY U.user_id LIMIT ? OFFSET ?`,
+            [limit, offset]
+        )
     } catch (err) {
         throw err;
     } finally {
