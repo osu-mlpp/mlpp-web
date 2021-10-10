@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "classnames": "^2.3.1",
+    "localforage": "^1.10.0",
     "mariadb": "^2.5.4",
     "next": "^11.1.2",
     "osu-api-extended": "^1.0.12",

@@ -42,7 +42,6 @@ header {
   @apply font-sf font-bold transition-shadow ease-out-cubic text-white inline-block py-2 px-4 rounded;
   background: radial-gradient( circle 300px at 8% 89.3%,  rgba(20,157,208,1) 0%, rgba(140,63,226,1) 90% );
   background-size: 200% 200%;
-  animation: gradient 10s ease infinite;
 }
 
 .btn--large {
@@ -51,18 +50,6 @@ header {
 
 .btn:hover {
   @apply shadow-hover;
-}
-
-@keyframes gradient {
-	0% {
-		background-position: 0% 50%;
-	}
-	50% {
-		background-position: 100% 50%;
-	}
-	100% {
-		background-position: 0% 50%;
-	}
 }
 
 main {
