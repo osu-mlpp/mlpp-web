@@ -88,38 +88,30 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <section className="grid relative">
+      <section className="relative">
         {/* Display the beatmap info if any */}
-        <div className="grid-row">
-          <div className="grid-col-12">
-            <BeatmapPreview beatmap={beatmap} beatmapCover={beatmapCover} />
-          </div>
-        </div>
+        <BeatmapPreview beatmap={beatmap} beatmapCover={beatmapCover} />
 
         {/* Enter the beatmap URL form */}
-        <div className="grid-row">
-          <div className="grid-col-12">
-            <Controller
+        <Controller
+          name="beatmapUrl"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
               name="beatmapUrl"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  name="beatmapUrl"
-                  label="Beatmap URL"
-                  placeholder={BEATMAP_URL_EXAMPLE}
-                />
-              )}
+              label="Beatmap URL"
+              placeholder={BEATMAP_URL_EXAMPLE}
             />
-          </div>
-        </div>
+          )}
+        />
 
         {/* Display the chart */}
-        <div className="grid-row">
-          <div className="grid-col-12">
-            <Chart rawData={scores} emptyBtnHandler={getExampleMap} beatmap />
-          </div>
-        </div>
+        <Chart
+          rawData={scores}
+          emptyBtnHandler={getExampleMap}
+          beatmap={beatmap}
+        />
       </section>
     </DefaultLayout>
   );

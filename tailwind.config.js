@@ -1,9 +1,6 @@
 const colors = require('tailwindcss/colors')
 
 module.exports = {
-  presets: [
-    require('@studiometa/tailwind-config')
-  ],
   darkMode: false,
   theme: {
     extend: {
@@ -59,7 +56,9 @@ module.exports = {
       blue: colors.blue
     }
   },
-  plugins: [],
+  plugins: [
+    require('tailwindcss-easing')
+  ],
   purge: [
     './pages/**/*.{js,ts,jsx,tsx}',
     './layout/**/*.{js,ts,jsx,tsx}',

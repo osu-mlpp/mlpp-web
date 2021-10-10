@@ -23,13 +23,13 @@
     "recharts": "^2.1.4"
   },
   "devDependencies": {
-    "@studiometa/tailwind-config": "^1.0.4",
     "@types/react": "17.0.11",
     "autoprefixer": "^10.3.4",
     "eslint": "7.29.0",
     "eslint-config-next": "11.0.1",
     "postcss": "^8.3.6",
     "tailwindcss": "^2.2.15",
+    "tailwindcss-easing": "^0.1.3",
     "typescript": "4.3.4"
   }
 }

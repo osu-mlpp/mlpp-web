@@ -24,11 +24,11 @@ a {
 }
 
 .container {
-  @apply flex flex-col h-screen px-4;
+  @apply mx-auto px-4;
   min-height: 100vh;
 }
 
-@screen xxl {
+@screen xl {
   .container {
     max-width: 1440px;
   }

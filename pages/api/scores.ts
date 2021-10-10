@@ -1,4 +1,3 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { ScoresResponse } from '../..'
 import flru from 'flru'
@@ -6,6 +5,7 @@ import client from './libs/client'
 import { v1 } from './libs/osu'
 
 const cache = flru(50)
+
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,7 +16,7 @@ export default async function handler(
     res.status(405)
   }
 
-  const { beatmap_id } = req.query
+  const beatmap_id = req.query.beatmap_id as string
 
   // Missing required parameter `beatmap_id`
   if (!beatmap_id) {
@@ -31,9 +31,9 @@ export default async function handler(
   }
 
 
-  try {
-    const db = await client.getConnection()
+  const db = await client.getConnection()
 
+  try {
     const [scores, beatmap] = await Promise.all([
       db.query(
         `SELECT S.score, S.maxcombo, S.count50, S.count100, S.count300, S.countmiss, S.enabled_mods, S.pp, U.rank_score
