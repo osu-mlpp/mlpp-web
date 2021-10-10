@@ -7,34 +7,23 @@ import Chart from "../components/Chart";
 import BeatmapPreview from "../components/BeatmapPreview";
 import { V1BeatmapObject, Score, ScoresResponse } from "..";
 import localforage from "localforage";
-
-const SCORES_ENDPOINT = "/api/scores";
-const BEATMAPSET_REGEX =
-  /beatmapsets\/(?<beatmapset_id>\d*)#.*\/(?<beatmap_id>\d*)/;
-const BEATMAP_URL_EXAMPLE = "https://osu.ppy.sh/beatmapsets/842412#osu/1764213";
-
-const getBeatmapsetCover = (beatmapsetId?: number | string | undefined) => {
-  if (!beatmapsetId) {
-    return `https://osu.ppy.sh/images/headers/profile-covers/c${randomNumber(
-      1,
-      8
-    )}.jpg`;
-  }
-
-  return `https://assets.ppy.sh/beatmaps/${beatmapsetId}/covers/cover.jpg`;
-};
+import api from "./api/libs/api";
+import { BEATMAP_URL_EXAMPLE, BEATMAPSET_REGEX } from "../utils/constants";
+import getBeatmapsetCover from "../utils/getOsuCover";
 
 export default function Home() {
   const { control, watch, setValue } = useForm({ mode: "onBlur" });
   const [beatmapCover, setBeatmapCover] = useState(getBeatmapsetCover());
   const [beatmap, setBeatmap] = useState<V1BeatmapObject | null>(null);
   const [scores, setScores] = useState<Score[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const beatmapUrl: string = watch("beatmapUrl", getBeatmapsetCover());
 
   useEffect(updateBeatmapData, [beatmapUrl]);
 
   function updateBeatmapData() {
+    setIsLoading(true);
     const beatmap = BEATMAPSET_REGEX.exec(beatmapUrl);
     const beatmapset_id = beatmap?.groups?.beatmapset_id;
     const beatmap_id = beatmap?.groups?.beatmap_id;
@@ -51,6 +40,7 @@ export default function Home() {
     // If the beatmap URL is invalid clear state
     setBeatmap(null);
     setScores([]);
+    setIsLoading(false);
   }
 
   async function getData(beatmap_id: string) {
@@ -59,22 +49,22 @@ export default function Home() {
     if (cachedData) {
       setScores(cachedData.scores);
       setBeatmap(cachedData.beatmap);
+      setIsLoading(false);
       return;
     }
+    const { scores, beatmap } = await api.scores({ beatmap_id });
 
-    const querystring = new URLSearchParams({
-      beatmap_id,
+    setScores(scores);
+    setBeatmap(beatmap);
+    setIsLoading(false);
+    localforage.setItem<ScoresResponse>(beatmap_id, {
+      scores,
+      beatmap,
     });
-    const response = await fetch(`${SCORES_ENDPOINT}?${querystring}`);
-    const data: ScoresResponse = await response.json();
-
-    setScores(data.scores);
-    setBeatmap(data.beatmap);
-    localforage.setItem<ScoresResponse>(beatmap_id, data);
   }
 
-  function getExampleMap() {
-    setValue("beatmapUrl", BEATMAP_URL_EXAMPLE);
+  function setExampleMap(url: string) {
+    setValue("beatmapUrl", url);
   }
 
   return (
@@ -93,30 +83,44 @@ export default function Home() {
         <BeatmapPreview beatmap={beatmap} beatmapCover={beatmapCover} />
 
         {/* Enter the beatmap URL form */}
-        <Controller
-          name="beatmapUrl"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
+        <div className="flex items-end justify-between">
+          <div className="flex-1">
+            <Controller
               name="beatmapUrl"
-              label="Beatmap URL"
-              placeholder={BEATMAP_URL_EXAMPLE}
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  name="beatmapUrl"
+                  label="Beatmap URL"
+                  placeholder={BEATMAP_URL_EXAMPLE}
+                />
+              )}
             />
-          )}
-        />
+          </div>
+          <button
+            className="btn"
+            onClick={() => {
+              setValue("beatmapUrl", "");
+            }}
+          >
+            Reset
+          </button>
+        </div>
+
+        {isLoading && (
+          <div className="bg-grey-light text-center p-4 my-4">
+            <h2 className="text-2xl font-bold">Loading...</h2>
+          </div>
+        )}
 
         {/* Display the chart */}
         <Chart
           rawData={scores}
-          emptyBtnHandler={getExampleMap}
+          setExampleMap={setExampleMap}
           beatmap={beatmap}
         />
       </section>
     </DefaultLayout>
   );
-}
-
-function randomNumber(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
 }

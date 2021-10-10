@@ -16,7 +16,7 @@ export default function BeatmapPreview({
     <div className="flex flex-col-reverse items-center -mt-24 mb-6 relative">
       {beatmap && (
         <div
-          className={`md:absolute inset-0 z-10 flex flex-col p-8 m:p-12 transition duration-500 ${
+          className={`md:absolute inset-0 z-10 flex flex-col p-8 m:p-12 transition duration-500 md:w-10/12 md:left-1/2 md:transform md:-translate-x-1/2 ${
             beatmap ? "opacity-100" : "opacity-0"
           }`}
         >
@@ -56,7 +56,7 @@ export default function BeatmapPreview({
         </div>
       )}
 
-      <div className="w-full">
+      <div className="w-full md:w-10/12">
         <Image
           className={`rounded shadow transition duration-500 ${
             beatmap ? "filter brightness-30" : ""

@@ -8,11 +8,14 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import TextField from "./TextField";
+import ExampleBeatmap from "./ExampleBeatmap";
 import { Score, V1BeatmapObject } from "..";
+import api from "../pages/api/libs/api";
+import getBeatmapUrl from "../utils/getBeatmapUrl";
 
 type ChartProps = {
   rawData: Score[];
-  emptyBtnHandler?: () => void;
+  setExampleMap: (url: string) => void;
   beatmap: V1BeatmapObject | null;
 };
 
@@ -26,11 +29,7 @@ type KeyPoint = {
   y: number;
 };
 
-export default function Chart({
-  rawData,
-  emptyBtnHandler,
-  beatmap,
-}: ChartProps) {
+export default function Chart({ rawData, setExampleMap, beatmap }: ChartProps) {
   const [minAcc, setMinAcc] = useState(0.9);
   const [minCombo, setMinCombo] = useState(0);
   const [maxMisses, setMaxMisses] = useState(-1);
@@ -91,14 +90,7 @@ export default function Chart({
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-3xl">Chart</h3>
       </div>
-      {rawData.length === 0 && (
-        <div>
-          <p className="mb-4">No scores found.</p>
-          <button className="btn" onClick={emptyBtnHandler}>
-            Try an example map
-          </button>
-        </div>
-      )}
+      {rawData.length === 0 && <NoData setExampleMap={setExampleMap} />}
       {graphData.length > 0 && (
         <>
           <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
@@ -172,5 +164,36 @@ export default function Chart({
         </>
       )}
     </section>
+  );
+}
+
+function NoData({ setExampleMap }: { setExampleMap: (url: string) => void }) {
+  const [maps, setMaps] = useState<V1BeatmapObject[]>([]);
+
+  useEffect(() => {
+    getMaps();
+  }, []);
+
+  async function getMaps() {
+    const maps = await api.mostPlayed();
+    setMaps(maps);
+  }
+
+  return (
+    <div>
+      <p className="text-lg mb-4">
+        Try using one of the most played beatmap 👇
+      </p>
+      {}
+      <div className="grid grid-cols-2 gap-8">
+        {maps.map((beatmap) => (
+          <ExampleBeatmap
+            key={beatmap.id.diff}
+            beatmap={beatmap}
+            onClick={() => setExampleMap(getBeatmapUrl(beatmap))}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
