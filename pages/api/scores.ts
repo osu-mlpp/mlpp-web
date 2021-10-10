@@ -27,8 +27,7 @@ export default async function handler(
       db.query(
         `select S.score, S.maxcombo, S.count50, S.count100, S.count300, S.countmiss, S.enabled_mods, S.pp, U.rank_score
         from osu_scores_high as S, osu_user_stats as U
-        where S.beatmap_id = ? and S.user_id=U.user_id and S.hidden=0
-        limit 100`,
+        where S.beatmap_id = ? and S.user_id=U.user_id and S.hidden=0`,
         [beatmap_id]
       ),
       v1.beatmap({ b: Number(beatmap_id) })

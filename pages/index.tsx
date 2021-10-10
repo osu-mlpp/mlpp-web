@@ -105,7 +105,7 @@ export default function Home() {
         <div className="grid-row">
           <div className="grid-col-12">
             <Chart
-              data={scores}
+              rawData={scores}
               emptyBtnHandler={getExampleMap}
             />
           </div>
