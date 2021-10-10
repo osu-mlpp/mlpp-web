@@ -5,7 +5,7 @@ import DefaultLayout from "../layout";
 import TextField from "../components/TextField";
 import Chart from "../components/Chart";
 import BeatmapPreview from "../components/BeatmapPreview";
-import { V1BeatmapObject, Score } from "..";
+import { V1BeatmapObject, Score, ScoresResponse } from "..";
 import localforage from "localforage";
 
 const SCORES_ENDPOINT = "/api/scores";
@@ -23,11 +23,6 @@ const getBeatmapsetCover = (beatmapsetId?: number | string | undefined) => {
 
   return `https://assets.ppy.sh/beatmaps/${beatmapsetId}/covers/cover.jpg`;
 };
-
-interface HttpBeatmapResponse {
-  scores: Score[];
-  beatmap: V1BeatmapObject;
-}
 
 export default function Home() {
   const { control, watch, setValue } = useForm({ mode: "onBlur" });
@@ -59,13 +54,9 @@ export default function Home() {
   }
 
   async function getData(beatmap_id: string) {
-    // Get data from cache if it exists
-    const cachedData = await localforage.getItem<HttpBeatmapResponse>(
-      beatmap_id
-    );
+    const cachedData = await localforage.getItem<ScoresResponse>(beatmap_id);
 
     if (cachedData) {
-      console.log("Get from cache");
       setScores(cachedData.scores);
       setBeatmap(cachedData.beatmap);
       return;
@@ -75,13 +66,11 @@ export default function Home() {
       beatmap_id,
     });
     const response = await fetch(`${SCORES_ENDPOINT}?${querystring}`);
-    const data: HttpBeatmapResponse = await response.json();
-
-    console.log(data);
+    const data: ScoresResponse = await response.json();
 
     setScores(data.scores);
     setBeatmap(data.beatmap);
-    localforage.setItem<HttpBeatmapResponse>(beatmap_id, data);
+    localforage.setItem<ScoresResponse>(beatmap_id, data);
   }
 
   function getExampleMap() {
@@ -128,7 +117,7 @@ export default function Home() {
         {/* Display the chart */}
         <div className="grid-row">
           <div className="grid-col-12">
-            <Chart rawData={scores} emptyBtnHandler={getExampleMap} />
+            <Chart rawData={scores} emptyBtnHandler={getExampleMap} beatmap />
           </div>
         </div>
       </section>
