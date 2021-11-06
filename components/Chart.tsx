@@ -53,7 +53,7 @@ export default function Chart({ rawData, setExampleMap, beatmap }: ChartProps) {
         6);
 
     for (const score of rawData) {
-      const index = Math.round(score.rank_score / granularity);
+      const index = Math.round(score.estimated_rank_score / granularity);
 
       const acc =
         (score.count300 * 6 + score.count100 * 2 + score.count50) * ratio;

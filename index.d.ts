@@ -38,7 +38,7 @@ type Score = {
   replay: number;
   hidden: number;
   country_acronym: string;
-  rank_score: number;
+  estimated_rank_score: number;
 }
 
 type ScoresResponse = {

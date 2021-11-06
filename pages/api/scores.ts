@@ -36,9 +36,8 @@ export default async function handler(
   try {
     const [scores, beatmap] = await Promise.all([
       db.query(
-        `SELECT S.score, S.maxcombo, S.count50, S.count100, S.count300, S.countmiss, S.enabled_mods, S.pp, U.rank_score
-        FROM osu_scores_high as S, osu_user_stats as U
-        WHERE S.beatmap_id = ? AND S.user_id=U.user_id AND S.hidden=0`,
+        `SELECT S.score, S.maxcombo, S.count50, S.count100, S.count300, S.countmiss, S.enabled_mods, S.pp, S.estimated_rank_score
+        FROM osu_scores_high as S WHERE S.beatmap_id = ? AND S.hidden=0`,
         [beatmap_id]
       ),
       v1.beatmap({ b: Number(beatmap_id) })
